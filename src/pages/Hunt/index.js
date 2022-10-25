@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { getContributors, getRepos } from '../../services/github'
+import ListGroup from 'react-bootstrap/ListGroup'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 import Repos from '../../components/Repos'
 
@@ -11,6 +13,7 @@ const Hunt = () => {
   const [org, setOrg] = useState('aziontech')
   const [repos, setRepos] = useState([])
   const [text, setText] = useState('')
+  const [loading, setLoading] = useState(false)
   const [repoWithContributors, setRepoWithContributors] = useState({})
 
   const loadRepos = async () => {
@@ -20,6 +23,7 @@ const Hunt = () => {
         token
       })
       setRepos(resp.data)
+      setLoading(false)
 
     } catch (e) {
       console.log('ERROR -> loadRepos', e)
@@ -27,47 +31,46 @@ const Hunt = () => {
   }
 
   useEffect(() => {
-    repos.map(async (repo, index) => {
-      const resp = await getContributors({
-        token,
-        org,
-        repo: repo.name
-      })
-      console.log('----', repo.name)
-
-      // setContributors({ ...contributors, [index]: 'ccc' })
-      setRepoWithContributors(prevContributors => {
-        return {
-          ...prevContributors, [repo.name]: {
-            name: repo.name,
-            contributors: resp.data
-          }
+    if (repos.length > 0) {
+      repos.map(async (repo) => {
+        try {
+          const resp = await getContributors({
+            token,
+            org,
+            repo: repo.name
+          })
+          
+          setRepoWithContributors(prevContributors => {
+            return {
+              ...prevContributors, [repo.name]: {
+                name: repo.name,
+                contributors: resp.data
+              }
+            }
+          })
+        } catch (i) {
+          alert(0)
+          console.log('getContributors', i)
         }
       })
-
-    })
-
+    }
   }, [repos])
-
-  useEffect(() => {
-    console.log('loaded', repoWithContributors)
-  }, [repoWithContributors])
-
 
   const handleRepos = (r) => {
 
     return Object.keys(r).map((item, index) => {
       return (
-
-        <li key={index}>
-          {item}
-          <div>Contributors:</div>
-          <ul>
-            {r[item].contributors.map((c, i) => {
-              return <li key={i}>{c.login}</li>
-            })}
-          </ul>
-        </li>
+        <ListGroup 
+          key={index}
+          as='ul'
+          className='mt-3'>
+          <ListGroup.Item as='li' active>{item}</ListGroup.Item>
+         
+          {r[item].contributors.map((c, i) => {
+            return <ListGroup.Item key={i}>{c.login}</ListGroup.Item>
+          })}
+          
+        </ListGroup>
       )
     })
   }
@@ -75,8 +78,8 @@ const Hunt = () => {
   return (
     <>
       <h1>Hunt</h1>
-      <Form>
-        <Form.Group className="mb-3">
+      <div className='row'>
+        <div className='col'>
           <Form.Control
             placeholder='Token'
             value={token}
@@ -84,32 +87,42 @@ const Hunt = () => {
               setToken(e.target.value)
             }}
           />
+        </div>
+        <div className='col'>
           <Form.Control
             placeholder='Org'
             onChange={(e) => {
               setOrg(e.target.value)
             }}
-            value={org} />
+            value={org}
+          />
+        </div>
+        <div className='col'>
           <Button
             variant="primary"
             onClick={() => {
+              setLoading(true)
               loadRepos()
             }}
           >
             GET
           </Button>
-        </Form.Group>
-
-        <hr />
-        {repos.length > 0 &&
-          <ul>
-            {handleRepos(repoWithContributors)}
-          </ul>
-        }
-
-        <hr />
-
-      </Form>
+        </div>
+      </div>      
+      <div className='row mt-3'>
+        <div className='col'>
+          {loading && 
+            <ProgressBar 
+              animated 
+              now={100}
+              variant='warning'
+            />
+          }
+          {repos.length > 0 &&
+              handleRepos(repoWithContributors)
+          }
+        </div>
+      </div>
     </>
   )
 

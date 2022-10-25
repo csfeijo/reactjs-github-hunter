@@ -3,7 +3,7 @@ import githubRepos from '../mocks/githubReposMock.json'
 import githubContributors from '../mocks/githubContributorsMock.json'
 
 const configureMock = (axios) => {
-  const mock = new MockAdapter(axios, { delayResponse: 0 })
+  const mock = new MockAdapter(axios, { delayResponse: 500 })
 
   // TODO: remove this static aziontech and use the dynamic value - regex maybe?
   mock.onGet('orgs/aziontech/repos').reply(200, githubRepos)
