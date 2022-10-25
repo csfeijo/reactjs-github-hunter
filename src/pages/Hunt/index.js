@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { getContributors, getRepos } from '../../services/github'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+
 import Repos from '../../components/Repos'
 
 const Hunt = () => {
 
-  const [token, setToken] = useState('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')
+  const [token, setToken] = useState('')
   const [org, setOrg] = useState('aziontech')
   const [repos, setRepos] = useState([])
   const [text, setText] = useState('')
@@ -72,37 +75,41 @@ const Hunt = () => {
   return (
     <>
       <h1>Hunt</h1>
-      <input
-        type='text'
-        placeholder='Token'
-        value={token}
-        onChange={(e) => {
-          setToken(e.target.value)
-        }}
-      />
-      <input
-        type='text'
-        placeholder='Org'
-        onChange={(e) => {
-          setOrg(e.target.value)
-        }}
-        value={org} />
-      <button
-        type='button'
-        onClick={() => {
-          loadRepos()
-        }}>
-        GET
-      </button>
-      <hr />
-      {repos.length > 0 &&
-        <ul>
-          {handleRepos(repoWithContributors)}
-        </ul>
-      }
+      <Form>
+        <Form.Group className="mb-3">
+          <Form.Control
+            placeholder='Token'
+            value={token}
+            onChange={(e) => {
+              setToken(e.target.value)
+            }}
+          />
+          <Form.Control
+            placeholder='Org'
+            onChange={(e) => {
+              setOrg(e.target.value)
+            }}
+            value={org} />
+          <Button
+            variant="primary"
+            onClick={() => {
+              loadRepos()
+            }}
+          >
+            GET
+          </Button>
+        </Form.Group>
 
-      <hr />
-      <div>{text}</div>
+        <hr />
+        {repos.length > 0 &&
+          <ul>
+            {handleRepos(repoWithContributors)}
+          </ul>
+        }
+
+        <hr />
+
+      </Form>
     </>
   )
 
