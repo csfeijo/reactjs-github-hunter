@@ -1,8 +1,27 @@
 import React from 'react'
+import {
+  BrowserRouter,
+  Route,
+  Routes
+} from 'react-router-dom'
+import Menu from './components/Menu'
+import Home from './pages/Home'
+import Hunt from './pages/Hunt'
 
 function App() {
   return (
-    <h1>Create React Template</h1>
+    <BrowserRouter>
+      <h1>GitHub Hunter</h1>
+      <Menu />
+
+      <Routes>
+        <Route path='/'>
+          <Route index element={<Home />} />
+        </Route>
+        <Route path='/hunt' element={<Hunt />} />
+      </Routes>
+
+    </BrowserRouter>
   )
 }
 
