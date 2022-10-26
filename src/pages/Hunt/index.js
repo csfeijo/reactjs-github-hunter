@@ -131,9 +131,10 @@ const Hunt = () => {
 
   return (
     <div className='mt-3 mb-3'>
-      <h1>Hunt Contributors</h1>
+      <h1 className='mb-4'>Hunt Contributors</h1>
       <div className='row'>
         <div className='col'>
+          <p>Put your token:</p>
           <Form.Control
             placeholder='Token'
             value={token}
@@ -143,6 +144,28 @@ const Hunt = () => {
           />
         </div>
         <div className='col'>
+          <p>Choose a prefined organization:</p>
+          <Form.Select
+            onChange={(e) => {
+              setOrg(e.target.value)
+            }}>
+            <option value="aziontech">aziontech</option>
+            <option value="denolend">denolend</option>
+            <option value="django">django</option>
+            <option value="gofiber">gofiber</option>
+            <option value="httpwg">httpwg</option>
+            <option value="kong">kong</option>
+            <option value="kubernetes">kubernetes</option>
+            <option value="nginx">nginx</option>
+            <option value="openresty">openresty</option>
+            <option value="openssl">openssl</option>
+            <option value="quicwg">quicwg</option>
+            <option value="vercel">vercel</option>
+            <option value="vuejs">vuejs</option>
+          </Form.Select>
+        </div>
+        <div className='col'>
+          <p><strong>or</strong> fill an organization:</p>
           <Form.Control
             placeholder='Org'
             onChange={(e) => {
@@ -152,9 +175,12 @@ const Hunt = () => {
           />
         </div>
         <div className='col'>
+          <p>&nbsp;</p>
           <Button
             variant="primary"
             onClick={() => {
+              setRepos([])
+              setRepoWithContributors({})
               setLoading(true)
               loadRepos()
             }}
