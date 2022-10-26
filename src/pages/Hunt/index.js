@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { getContributors, getRepos } from '../../services/github'
+import { getContributorData, getContributors, getRepos } from '../../services/github'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import ProgressBar from 'react-bootstrap/ProgressBar'
+import Image from 'react-bootstrap/Image'
+import Spinner from 'react-bootstrap/Spinner'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons'
 
-import Repos from '../../components/Repos'
 
 const Hunt = () => {
 
   const [token, setToken] = useState('')
   const [org, setOrg] = useState('aziontech')
   const [repos, setRepos] = useState([])
-  const [text, setText] = useState('')
   const [loading, setLoading] = useState(false)
   const [repoWithContributors, setRepoWithContributors] = useState({})
+
+
+  const [nome, setNome] = useState('')
 
   const loadRepos = async () => {
     try {
@@ -67,7 +71,57 @@ const Hunt = () => {
           <ListGroup.Item as='li' active>{item}</ListGroup.Item>
          
           {r[item].contributors.map((c, i) => {
-            return <ListGroup.Item key={i}>{c.login}</ListGroup.Item>
+
+            getContributorData({
+              userName: c.login
+            }).then((resp) => {
+              console.log(resp)
+              setNome(resp.data.name)
+            })
+
+            return (
+              <ListGroup.Item key={i}>
+                <div className='row'>
+                  <div className='col-1'>
+                    <Image 
+                      src={c.avatar_url} 
+                      fluid={true}
+                      rounded={true}
+                      thumbnail={true}
+                    />
+                  </div>
+                  <div className='col'>
+                    <a
+                      href={`https://github.com/${c.login}`} 
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      <Button 
+                        variant='light'
+                        className='btn-sm'
+                      >
+                        <FontAwesomeIcon 
+                          icon={faAddressCard}
+                        />
+                        &nbsp;
+                        {c.login}
+                      </Button>
+                    </a>
+                    <br/>
+                    {/* <Button 
+                      variant="secondary"
+                      size="sm"
+                      className='mt-3'
+                      onClick={() => {
+                        alert(9)
+                      }}
+                    >
+                      Fetch info
+                    </Button> */}
+                  </div>
+                </div>
+              </ListGroup.Item>
+            )
           })}
           
         </ListGroup>
@@ -76,8 +130,8 @@ const Hunt = () => {
   }
 
   return (
-    <>
-      <h1>Hunt</h1>
+    <div className='mt-3 mb-3'>
+      <h1>Hunt Contributors</h1>
       <div className='row'>
         <div className='col'>
           <Form.Control
@@ -112,18 +166,19 @@ const Hunt = () => {
       <div className='row mt-3'>
         <div className='col'>
           {loading && 
-            <ProgressBar 
-              animated 
-              now={100}
-              variant='warning'
-            />
+            <div className='mb-3 mt-3 text-center'>
+              <Spinner 
+                animation="border" 
+                variant="warning"
+              />
+            </div>
           }
           {repos.length > 0 &&
               handleRepos(repoWithContributors)
           }
         </div>
       </div>
-    </>
+    </div>
   )
 
 }

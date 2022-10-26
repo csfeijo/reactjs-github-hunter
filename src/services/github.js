@@ -29,3 +29,11 @@ export const getContributors = async ({ token, org, repo }) => {
     .catch(e => { error = e.response })
   return resp || error
 }
+
+export const getContributorData = async ({ userName }) => {
+  let error = {}
+  const resp = await api
+    .get(`${userName}`)
+    .catch(e => { error = e.response })
+  return resp || error
+}

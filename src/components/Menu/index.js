@@ -5,6 +5,7 @@ import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDigging } from '@fortawesome/free-solid-svg-icons'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 const Menu = () => {
 
@@ -16,7 +17,8 @@ const Menu = () => {
     >
       <Container>
         <Navbar.Brand href="#home">
-          <FontAwesomeIcon icon={faDigging} /> GitHub Hunt
+          <FontAwesomeIcon icon={faDigging}/>
+          <FontAwesomeIcon icon={faGithub} /> <span className='p-2'>GitHub Hunt</span>
         </Navbar.Brand>
         <Nav className="me-auto">
           <LinkContainer to="/">
