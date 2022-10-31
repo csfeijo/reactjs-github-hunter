@@ -17,9 +17,6 @@ const Hunt = () => {
   const [loading, setLoading] = useState(false)
   const [repoWithContributors, setRepoWithContributors] = useState({})
 
-
-  const [nome, setNome] = useState('')
-
   const loadRepos = async () => {
     try {
       const resp = await getRepos({
@@ -30,7 +27,7 @@ const Hunt = () => {
       setLoading(false)
 
     } catch (e) {
-      console.log('ERROR -> loadRepos', e)
+      console.error('Exception -> loadRepos', e)
     }
   }
 
@@ -52,9 +49,8 @@ const Hunt = () => {
               }
             }
           })
-        } catch (i) {
-          alert(0)
-          console.log('getContributors', i)
+        } catch (e) {
+          console.error('Excepetion -> getContributors', e)
         }
       })
     }
@@ -71,13 +67,6 @@ const Hunt = () => {
           <ListGroup.Item as='li' active>{item}</ListGroup.Item>
          
           {r[item].contributors.map((c, i) => {
-
-            getContributorData({
-              userName: c.login
-            }).then((resp) => {
-              console.log(resp)
-              setNome(resp.data.name)
-            })
 
             return (
               <ListGroup.Item key={i}>
@@ -107,17 +96,6 @@ const Hunt = () => {
                         {c.login}
                       </Button>
                     </a>
-                    <br/>
-                    {/* <Button 
-                      variant="secondary"
-                      size="sm"
-                      className='mt-3'
-                      onClick={() => {
-                        alert(9)
-                      }}
-                    >
-                      Fetch info
-                    </Button> */}
                   </div>
                 </div>
               </ListGroup.Item>
